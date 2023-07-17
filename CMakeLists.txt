@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.16)
 # 定义项目的名称
 project(TransFInfer)
-
+set(CMAKE_CXX_STANDARD 17)
 # 查找并加载第三方库， REQUIRED表示这个库是必须的，如果找不到这个库
 # Cmake就会报错并停止构建
 # 性能测试和基准测试
@@ -32,19 +32,21 @@ endif()
 set(link_math_lib ${ARMADILLO_LIBRARIES} ${BLAS_LIBRARIES} ${LAPACK_LIBRARIES})
 # 将指定目录中的源文件收集到一个变量中 list
 aux_source_directory(./test DIR_TEST_ARMA)
+aux_source_directory(./source DIR_SOURCE_ARMA)
 # 将源文件编译为可执行文件
 # 可执行文件名称 源文件。。。 list
 # main 是主要的源文件， DIR_TEST_ARMA中的源文件也会被编译并并链接到可执行文件中
-add_executable(TransFInfer main.cpp ${DIR_TEST_ARMA})
+add_executable(TransFInfer main.cpp ${DIR_TEST_ARMA} ${DIR_SOURCE_ARMA})
 # 将链接库与可执行文件进行关联， 确保所需的库和依赖项与你的可执行文件正确链接，
 # 以便在运行时能够访问它们提供的功能和特性
 target_link_libraries(TransFInfer ${link_lib} ${link_math_lib} OpenMP::OpenMP_CXX)
 
 # 指定可执行文件包含的目录，将这些指定的目录路径添加到目标可执行文件的包含路径中
-# 编译器将搜寻这些目标以找到所需的头文件 这些目录中的头文件将被公开访问，并可以在代码中使用
+# 编译目标文件时，编译器将搜寻这些目标以找到所需的头文件 这些目录中的头文件将被公开访问，并可以在代码中使用
 target_include_directories(TransFInfer PUBLIC ${glog_INCLUDE_DIR})
 target_include_directories(TransFInfer PUBLIC ${GTest_INCLUDE_DIR})
 target_include_directories(TransFInfer PUBLIC ${Armadillo_INCLUDE_DIR})
+target_include_directories(TransFInfer PUBLIC ./include)
 
 # 启用测试，将相关的测试相关功能添加到生成的构建系统中，可以编写和运行单元测试
 enable_testing()
